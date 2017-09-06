@@ -1,0 +1,15 @@
+{
+    "name": "drupal/okta_api",
+    "description": "Okta API",
+    "type": "drupal-module",
+    "minimum-stability": "dev",
+    "require": {
+      "okta/sdk": "dev-develop",
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:dakkusingh/okta-sdk-php.git"
+        }
+    ]
+}
