@@ -3,7 +3,7 @@
 namespace Drupal\okta_api\Service;
 
 use Okta\Users\User;
-use Okta\Users\Profile;
+use Okta\Users\UserProfile;
 use Drupal\okta_api\Service\OktaClient;
 
 /**
@@ -27,7 +27,11 @@ class Users {
     $config = $this->oktaClient->config;
 
     $user = new User();
-    $profile = new Profile();
+
+    // TODO This seems outdated in the OKTA API documentation.
+    // Check API and update.
+    /*
+    $profile = new UserProfile();
 
     $profile->setFirstName($first_name)
       ->setLastName($last_name)
@@ -38,7 +42,7 @@ class Users {
 
     $user->setGroupIds([
       $config->get('default_group_id'),
-    ]);
+    ]);*/
 
     return $user->create() ? TRUE : FALSE;
   }
