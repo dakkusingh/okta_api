@@ -47,4 +47,9 @@ class Users {
     return $user->create() ? TRUE : FALSE;
   }
 
+  public function userGetByEmail($email_address) {
+    $user = new User();
+    return $user->get($email_address);
+  }
+
 }
