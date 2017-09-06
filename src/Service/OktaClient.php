@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\okta_api\Service\OktaClient;
+namespace Drupal\okta_api\Service;
 
 use Okta\Okta;
 use Okta\ClientBuilder;

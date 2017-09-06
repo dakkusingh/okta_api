@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\okta_api\Service\Users;
+namespace Drupal\okta_api\Service;
 
 use Okta\Users\User;
 use Okta\Users\Profile;
