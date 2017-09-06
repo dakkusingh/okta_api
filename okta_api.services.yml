@@ -1,0 +1,7 @@
+services:
+  okta_api.okta_client:
+    class: Drupal\okta_api\Service\OktaClient
+    arguments: ["@config.factory"]
+  okta_api.users:
+    class: Drupal\okta_api\Service\Users
+    arguments: ["@okta_api.okta_client"]
