@@ -61,8 +61,10 @@ class SettingsForm extends ConfigFormBase {
     ];
 
     // TODO Remove this once module POC works.
-    $foo = \Drupal::service('okta_api.users')->userCreate('1','2','3');
-    ksm($foo);
+    //$foo = \Drupal::service('okta_api.users')->userGetByEmail('email');
+    //$foo = \Drupal::service('okta_api.users');
+    //$foo = \Drupal::service('okta_api.okta_client');
+    //ksm($foo);
 
     return parent::buildForm($form, $form_state);
   }

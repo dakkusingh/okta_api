@@ -29,8 +29,9 @@ class OktaClient {
 
     // TODO Druplify this.
     catch (\Exception $e) {
-      \Drupal::logger('okta_api')->warning("Failed to create Okta Client using API: @message",
-        ['@message' => $e->getMessage()]);
+      ksm($e);
+      //\Drupal::logger('okta_api')->warning("Failed to create Okta Client using API: @message",
+      //  ['@message' => $e->getMessage()]);
     }
   }
 
