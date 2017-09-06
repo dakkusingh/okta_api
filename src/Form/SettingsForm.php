@@ -60,6 +60,10 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('default_group_id'),
     ];
 
+    // TODO Remove this once module POC works.
+    $foo = \Drupal::service('okta_api.users')->userCreate('1','2','3');
+    ksm($foo);
+
     return parent::buildForm($form, $form_state);
   }
 
