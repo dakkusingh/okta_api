@@ -70,7 +70,7 @@ class SettingsForm extends ConfigFormBase {
 
     $this->config('okta_api.settings')
       ->set('api_key', $form_state->getValue('api_key'))
-      ->set('default_group_id', $form_state->getValue('default_template_id'))
+      ->set('default_group_id', $form_state->getValue('default_group_id'))
       ->set('organisation_url', $form_state->getValue('organisation_url'))
       ->save();
 
