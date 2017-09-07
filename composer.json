@@ -6,7 +6,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/dakkusingh/okta-sdk-php.git"
+            "url": "http://github.com/dakkusingh/okta-sdk-php"
         }
     ],
     "require": {
