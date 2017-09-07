@@ -9,7 +9,7 @@
             "url": "http://github.com/dakkusingh/okta-sdk-php"
         }
     ],
-    "require": {
-      "dakkusingh/sdk": "dev-drupal"
+    "require-dev": {
+      "dakkusingh/sdk": "dev-develop"
     }
 }
