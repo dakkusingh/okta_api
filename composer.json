@@ -3,13 +3,13 @@
     "description": "Okta API",
     "type": "drupal-module",
     "minimum-stability": "dev",
-    "require": {
-      "okta/drupalsdk": "dev-develop"
-    },
     "repositories": [
         {
             "type": "vcs",
             "url": "https://github.com/dakkusingh/okta_api.git"
         }
-    ]
+    ],
+    "require": {
+      "okta/sdk": "dev-develop"
+    },
 }
