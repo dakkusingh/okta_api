@@ -18,6 +18,6 @@
         }
     ],
     "require": {
-      "okta/sdk": "dev-drupal8"
+      "okta/sdk": "drupal8"
     }
 }
