@@ -9,7 +9,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:dakkusingh/okta-sdk-php.git"
+            "url": "https://github.com/dakkusingh/okta_api.git"
         }
     ]
 }
