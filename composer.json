@@ -8,16 +8,16 @@
             "type": "package",
             "package": {
                 "name": "okta/sdk",
-                "version": "dev-drupal",
+                "version": "dev-master",
                 "source": {
                     "url": "https://github.com/dakkusingh/okta-sdk-php.git",
                     "type": "git",
-                    "reference": "drupal"
+                    "reference": "master"
                 }
             }
         }
     ],
     "require": {
-      "okta/sdk": "drupal"
+      "okta/sdk": "master"
     }
 }
