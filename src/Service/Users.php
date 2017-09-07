@@ -57,22 +57,4 @@ class Users {
   // TODO Extend the CRUD
   //public function userDelete($something) {}
 
-  // TODO Extend the Profile
-  //public function userGetProfile($something) {}
-
-  // TODO Extend the Profile
-  /*public function userSetProfile($first_name, $last_name, $email_address, $user) {
-    $profile = new UserProfile();
-
-    $profile->setFirstName($first_name)
-      ->setLastName($last_name)
-      ->setLogin($email_address)
-      ->setEmail($email_address);
-
-    $user->setProfile($profile);
-    return $user;
-  }*/
-
-
-
 }

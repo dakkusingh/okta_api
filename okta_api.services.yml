@@ -5,3 +5,6 @@ services:
   okta_api.users:
     class: Drupal\okta_api\Service\Users
     arguments: ["@okta_api.okta_client"]
+  okta_api.profile:
+    class: Drupal\okta_api\Service\Profile
+    arguments: ["@okta_api.okta_client", "@okta_api.okta_users"]
