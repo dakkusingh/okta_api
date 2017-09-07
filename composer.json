@@ -5,11 +5,11 @@
     "minimum-stability": "dev",
     "repositories": [
         {
-            "type": "git",
+            "type": "vcs",
             "url": "https://github.com/dakkusingh/okta-sdk-php.git"
         }
     ],
     "require": {
-      "okta/drupalsdk": "dev-develop"
+      "okta/sdk": "dev-drupal8"
     }
 }
