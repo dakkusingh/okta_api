@@ -27,6 +27,8 @@ Edit your composer.json at the ROOT level and include the custom VCS repository,
     }        
 ],
 ```
+Install the Okta SDK
+`composer require okta/sdk:dev-develop`
 
 Now install the module.
 `composer require drupal/okta_api`
