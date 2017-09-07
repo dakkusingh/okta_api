@@ -4,7 +4,7 @@
     "type": "drupal-module",
     "minimum-stability": "dev",
     "require": {
-      "okta/sdk": "dev-develop"
+      "okta/drupalsdk": "dev-develop"
     },
     "repositories": [
         {
