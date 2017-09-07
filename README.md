@@ -28,3 +28,9 @@ my_module.my_service:
 Alternatively, just call the service without Dependency Injection.
 
 `$okta_user = \Drupal::service('okta_api.users')->userGetByEmail('email');`
+
+## Okta as IDP for SimpleSaml
+This module is not the one to use if you are looking for IDP integration between Drupal and Okta.
+
+Please use:
+https://www.drupal.org/project/simplesamlphp_auth
