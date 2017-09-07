@@ -5,8 +5,16 @@
     "minimum-stability": "dev",
     "repositories": [
         {
-            "type": "vcs",
-            "url": "https://github.com/dakkusingh/okta-sdk-php.git"
+            "type": "package",
+            "package": {
+                "name": "okta/sdk",
+                "version": "dev-drupal8",
+                "source": {
+                    "url": "https://github.com/dakkusingh/okta-sdk-php.git",
+                    "type": "git",
+                    "reference": "drupal8"
+                }
+            }
         }
     ],
     "require": {
