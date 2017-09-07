@@ -11,5 +11,5 @@
     ],
     "require": {
       "okta/sdk": "dev-develop"
-    },
+    }
 }
