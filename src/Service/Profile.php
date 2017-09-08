@@ -9,27 +9,14 @@ use Drupal\okta_api\Service\OktaClient;
 /**
  * Service class for User Profile
  */
-class Profile {
-
-  /**
-   * @var \Drupal\okta_api\Service\OktaClient
-   */
-  public $oktaClient;
-
-  /**
-   * @var \Drupal\okta_api\Service\Users
-   */
-  public $oktaUsers;
+class Profile extends OktaClient {
 
   /**
    * Constructor for the OKTA User Profile class.
    */
-  public function __construct(OktaClient $oktaClient, $oktaUsers) {
-    $this->oktaClient = $oktaClient;
-    $this->oktaUsers = $oktaUsers;
-    $this->oktaProfile = new UserProfile();
+  public function __construct(ConfigFactory $config_factory) {
+    parent::__construct($config_factory);
   }
-
 
   // TODO Extend the Profile
   //public function profileGet($something) {}
@@ -46,7 +33,5 @@ class Profile {
     $user->setProfile($this->profile);
     return $user;
   }
-
-
 
 }
