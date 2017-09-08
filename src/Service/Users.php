@@ -72,6 +72,17 @@ class Users extends OktaClient {
     }
   }
 
+  public function userActivate($email_address) {
+    try {
+      $response = $this->oktaClient->user->activate($email_address);
+      return $response;
+    }
+    catch (OktaException $e) {
+      // TODO handle exceptions.
+      return $e->getErrorSummary();
+    }
+  }
+
   // TODO Extend the CRUD
   //public function userUpdate($something) {}
 
