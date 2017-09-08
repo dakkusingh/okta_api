@@ -60,11 +60,17 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('default_group_id'),
     ];
 
+    // TODO Add checkbox to handle okta preview (oktapreview.com) domain
+
     // TODO Remove this once module POC works.
-    //$foo = \Drupal::service('okta_api.users')->userGetByEmail('email');
+    //$foo = \Drupal::service('okta_api.users')->userCreate('A', 'C', 'email@email');
+    //$foo2 = \Drupal::service('okta_api.users')->userGetByEmail('email@email');
+
     //$foo = \Drupal::service('okta_api.users');
     //$foo = \Drupal::service('okta_api.okta_client');
+
     //ksm($foo);
+    //ksm($foo2);
 
     return parent::buildForm($form, $form_state);
   }
@@ -73,7 +79,7 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
+    // TODO Add checkbox to handle okta preview (oktapreview.com) domain
     $this->config('okta_api.settings')
       ->set('api_key', $form_state->getValue('api_key'))
       ->set('default_group_id', $form_state->getValue('default_group_id'))
