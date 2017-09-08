@@ -25,9 +25,10 @@ class OktaClient {
         $config->get('organisation_url'),
         $config->get('api_key'),
         [
-          //'bootstrap' => false, // Don't auto-bootstrap the Okta resource properties
-          // TODO Add checkbox in SettingsForm to handle okta preview (oktapreview.com) domain
-          'preview' => true,  // Use the okta preview (oktapreview.com) domain
+          // Don't auto-bootstrap the Okta resource properties
+          //'bootstrap' => false,
+          // Use the okta preview (oktapreview.com) domain
+          'preview' => $config->get('preview_domain'),
           //'headers' => [
           //  'Some-Header'    => 'Some value',
           //  'Another-Header' => 'Another value'

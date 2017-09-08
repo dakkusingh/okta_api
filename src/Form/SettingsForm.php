@@ -41,8 +41,8 @@ class SettingsForm extends ConfigFormBase {
 
     $form['api_key'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('API Key'),
-      '#description' => $this->t('The API key to use.'),
+      '#title' => $this->t('API Token'),
+      '#description' => $this->t('The API token to use.'),
       '#default_value' => $config->get('api_key'),
     ];
 
@@ -60,10 +60,17 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('default_group_id'),
     ];
 
-    // TODO Add checkbox to handle okta preview (oktapreview.com) domain
+    // Add checkbox to handle okta preview (oktapreview.com) domain.
+    $form['preview_domain'] = [
+      '#type' => 'checkbox',
+      '#title' => 'Use Okta preview domain',
+      '#description' => 'If checked, API will use the Okta preview (oktapreview.com) domain.',
+      '#return_value' => TRUE,
+      '#default_value' => $config->get('preview_domain'),
+    ];
 
     // TODO Remove this once module POC works.
-    //$foo = \Drupal::service('okta_api.users')->userCreate('A', 'C', 'email@email');
+    //$foo = \Drupal::service('okta_api.users')->userCreate('dakku', 'singh', 'email@email');
     //$foo2 = \Drupal::service('okta_api.users')->userGetByEmail('email@email');
 
     //$foo = \Drupal::service('okta_api.users');
@@ -79,11 +86,11 @@ class SettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // TODO Add checkbox to handle okta preview (oktapreview.com) domain
     $this->config('okta_api.settings')
       ->set('api_key', $form_state->getValue('api_key'))
       ->set('default_group_id', $form_state->getValue('default_group_id'))
       ->set('organisation_url', $form_state->getValue('organisation_url'))
+      ->set('preview_domain', $form_state->getValue('preview_domain'))
       ->save();
 
     parent::submitForm($form, $form_state);
