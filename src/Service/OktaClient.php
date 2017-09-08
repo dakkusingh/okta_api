@@ -2,8 +2,8 @@
 
 namespace Drupal\okta_api\Service;
 
-use Okta\Okta;
-use Okta\ClientBuilder;
+use Okta\Client;
+use Okta\Exception as OktaException;
 use Drupal\Core\Config\ConfigFactory;
 
 /**
@@ -11,24 +11,32 @@ use Drupal\Core\Config\ConfigFactory;
  */
 class OktaClient {
 
-  protected $oktaClient = NULL;
+  public $oktaClient = NULL;
 
   /**
    * Create the Okta API client.
    */
   public function __construct(ConfigFactory $config_factory) {
     // Get the config.
-    $this->config = $config_factory->get('okta_api.settings');
+    $config = $config_factory->get('okta_api.settings');
 
     try {
-      $this->oktaClient = (new ClientBuilder())
-        ->setToken($this->config->get('api_key'))
-        ->setOrganizationUrl($this->config->get('organisation_url'))
-        ->build();
+      $this->oktaClient = new Client(
+        $config->get('organisation_url'),
+        $config->get('api_key'),
+        [
+          //'bootstrap' => false, // Don't auto-bootstrap the Okta resource properties
+          // TODO Add checkbox in SettingsForm to handle okta preview (oktapreview.com) domain
+          'preview' => true,  // Use the okta preview (oktapreview.com) domain
+          //'headers' => [
+          //  'Some-Header'    => 'Some value',
+          //  'Another-Header' => 'Another value'
+          //]
+        ]
+      );
     }
-
-    // TODO Druplify this.
-    catch (\Exception $e) {
+    catch (OktaException $e) {
+      // TODO handle exceptions.
       ksm($e);
       //\Drupal::logger('okta_api')->warning("Failed to create Okta Client using API: @message",
       //  ['@message' => $e->getMessage()]);
