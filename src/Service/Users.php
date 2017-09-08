@@ -2,43 +2,41 @@
 
 namespace Drupal\okta_api\Service;
 
-use Okta\Users\User;
-use Okta\Users\UserProfile;
-use Drupal\okta_api\Service\OktaClient;
+use Drupal\Core\Config\ConfigFactory;
 
 /**
  * Service class for Users
  */
-class Users {
+class Users extends OktaClient {
 
   /**
-   * @var \Drupal\okta_api\Service\OktaClient
+   * Constructor for the Okta Users class.
    */
-  public $oktaClient;
-
-  /**
-   * Constructor for the OKTA Users class.
-   */
-  public function __construct(OktaClient $oktaClient) {
-    $this->oktaClient = $oktaClient;
+  public function __construct(ConfigFactory $config_factory) {
+    parent::__construct($config_factory);
   }
 
   public function userCreate($first_name, $last_name, $email_address) {
     $config = $this->oktaClient->config;
 
-    $user = new User();
+    // TODO check if the user already exists in Okta..
+    // TODO Assign user to application
+    try {
+      $user = $this->oktaClient->user->create(
+        [
+          "firstName" => $first_name,
+          "lastName" => $last_name,
+          "email" => $email_address,
+          "login" => $email_address,
+        ]
+      );
+      return $user;
+    }
+    catch (OktaException $e) {
+      // TODO handle exceptions.
+      return $e->getErrorSummary();
+    }
 
-    // TODO This seems outdated in the OKTA API documentation.
-    // Check API and update.
-    /*
-    // TODO Set profile here or somewhere else?
-    $user = userSetProfile($first_name, $last_name, $email_address, $user)
-
-    $user->setGroupIds([
-      $config->get('default_group_id'),
-    ]);*/
-
-    return $user->create() ? TRUE : FALSE;
   }
 
   // TODO Extend the CRUD
@@ -47,8 +45,14 @@ class Users {
   }*/
 
   public function userGetByEmail($email_address) {
-    $user = new User();
-    return $user->get($email_address);
+    try {
+      $user = $this->oktaClient->user->get($email_address);
+      return $user;
+    }
+    catch (OktaException $e) {
+      // TODO handle exceptions.
+      return $e->getErrorSummary();
+    }
   }
 
   // TODO Extend the CRUD
