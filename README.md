@@ -14,19 +14,6 @@ Out of the box this module will provide services that integrate with Okta API, t
 https://developer.okta.com/docs/api/resources/apps.html
 
 ## Installation
-Edit your composer.json at the ROOT level and include the custom VCS repository, your repositories should look as follows:
-```
-"repositories": [
-    {
-        "type": "composer",
-        "url": "https://packages.drupal.org/8"
-    },
-    {
-        "type": "git",
-        "url": "https://github.com/dakkusingh/okta-sdk-php.git"
-    }        
-],
-```
 Install the Okta API Module
 `composer require drupal/okta_api`
 
