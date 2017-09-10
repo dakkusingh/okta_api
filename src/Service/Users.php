@@ -72,6 +72,11 @@ class Users extends OktaClient {
     }
   }
 
+  public function userGetAll() {
+    $users = $this->oktaClient->user->get();
+    return $users;
+  }
+
   public function userActivate($email_address) {
     try {
       $response = $this->oktaClient->user->activate($email_address);
