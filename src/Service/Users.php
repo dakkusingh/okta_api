@@ -91,7 +91,9 @@ class Users extends OktaClient {
   // TODO Extend the CRUD
   //public function userUpdate($something) {}
 
-  // TODO Extend the CRUD
-  //public function userDelete($something) {}
+  public function userDeactivate($user_id) {
+    $response = $this->oktaClient->user->deactivate($user_id);
+    return $response;
+  }
 
 }
