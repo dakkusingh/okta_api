@@ -4,6 +4,7 @@ namespace Drupal\okta_api\Service;
 
 use Drupal\Core\Config\ConfigFactory;
 use Okta\Exception;
+use Okta\Resource\User;
 
 /**
  * Service class for Users
@@ -15,6 +16,7 @@ class Users extends OktaClient {
    */
   public function __construct(ConfigFactory $config_factory) {
     parent::__construct($config_factory);
+    $this->user = new User($this->oktaClient);
   }
 
   public function userCreate($first_name, $last_name, $email_address) {
@@ -27,7 +29,7 @@ class Users extends OktaClient {
 
     // TODO Assign user to application
     try {
-      $user = $this->oktaClient->user->create(
+      $user = $this->user->create(
         [
           "firstName" => $first_name,
           "lastName" => $last_name,
@@ -63,7 +65,7 @@ class Users extends OktaClient {
 
   public function userGetByEmail($email_address) {
     try {
-      $user = $this->oktaClient->user->get($email_address);
+      $user = $this->user->get($email_address);
       return $user;
     }
     catch (OktaException $e) {
@@ -75,13 +77,13 @@ class Users extends OktaClient {
   public function userGetAll() {
     // TODO Wrap this around try catch.
     // TODO handle exceptions.
-    $users = $this->oktaClient->user->get();
+    $users = $this->user->get();
     return $users;
   }
 
   public function userActivate($email_address) {
     try {
-      $response = $this->oktaClient->user->activate($email_address);
+      $response = $this->user->activate($email_address);
       return $response;
     }
     catch (OktaException $e) {
@@ -96,7 +98,7 @@ class Users extends OktaClient {
   public function userDeactivate($user_id) {
     // TODO Wrap this around try catch.
     // TODO handle exceptions.
-    $response = $this->oktaClient->user->deactivate($user_id);
+    $response = $this->user->deactivate($user_id);
     return $response;
   }
 
