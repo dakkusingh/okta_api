@@ -2,25 +2,29 @@
 
 namespace Drupal\okta_api\Service;
 
-use Drupal\Core\Config\ConfigFactory;
 use Okta\Exception;
 use Okta\Resource\User;
 
 /**
  * Service class for Users
  */
-class Users extends OktaClient {
+class Users {
+
+  /**
+   * @var \Drupal\okta_api\Service\OktaClient
+   */
+  public $oktaClient;
 
   /**
    * Constructor for the Okta Users class.
    */
-  public function __construct(ConfigFactory $config_factory) {
-    parent::__construct($config_factory);
-    $this->user = new User($this->oktaClient);
+  public function __construct(OktaClient $oktaClient) {
+    $this->oktaClient = $oktaClient->Client;
+    $this->user = new User($oktaClient->Client);
+    $this->oktaConfig = $oktaClient->config;
   }
 
   public function userCreate($first_name, $last_name, $email_address) {
-    $config = $this->oktaClient->config;
 
     $existingUser = $this->getUserIfExists($email_address);
     if ($existingUser) {

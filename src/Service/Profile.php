@@ -2,20 +2,26 @@
 
 namespace Drupal\okta_api\Service;
 
-use Okta\Users\User;
-use Okta\Users\UserProfile;
-use Drupal\okta_api\Service\OktaClient;
+use Okta\Resource\User;
+use Okta\Exception;
 
 /**
  * Service class for User Profile
  */
-class Profile extends OktaClient {
+class Profile {
+
+  /**
+   * @var \Drupal\okta_api\Service\OktaClient
+   */
+  public $oktaClient;
 
   /**
    * Constructor for the OKTA User Profile class.
    */
-  public function __construct(ConfigFactory $config_factory) {
-    parent::__construct($config_factory);
+  public function __construct(OktaClient $oktaClient) {
+    $this->oktaClient = $oktaClient->Client;
+    $this->user = new User($oktaClient->Client);
+    $this->oktaConfig = $oktaClient->config;
   }
 
   // TODO Extend the Profile
@@ -23,7 +29,8 @@ class Profile extends OktaClient {
 
   // TODO Extend the Profile
   public function profileSet($first_name, $last_name, $email_address, $user) {
-    $this->profile = new UserProfile();
+    // TODO Extend the Profile, the code below needs refactoring.
+    /*$this->profile = new UserProfile();
 
     $this->profile->setFirstName($first_name)
       ->setLastName($last_name)
@@ -31,7 +38,8 @@ class Profile extends OktaClient {
       ->setEmail($email_address);
 
     $user->setProfile($this->profile);
-    return $user;
+
+    return $user;*/
   }
 
 }

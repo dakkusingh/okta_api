@@ -21,7 +21,7 @@ class OktaClient {
     $config = $config_factory->get('okta_api.settings');
 
     try {
-      $this->oktaClient = new Client(
+      $this->Client = new Client(
         $config->get('organisation_url'),
         $config->get('api_key'),
         [
