@@ -26,7 +26,7 @@ class OktaClient {
         $config->get('api_key'),
         [
           // Don't auto-bootstrap the Okta resource properties
-          //'bootstrap' => false,
+          'bootstrap' => false,
           // Use the okta preview (oktapreview.com) domain
           'preview' => $config->get('preview_domain'),
           //'headers' => [
