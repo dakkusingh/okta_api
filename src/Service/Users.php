@@ -73,6 +73,8 @@ class Users extends OktaClient {
   }
 
   public function userGetAll() {
+    // TODO Wrap this around try catch.
+    // TODO handle exceptions.
     $users = $this->oktaClient->user->get();
     return $users;
   }
@@ -92,6 +94,8 @@ class Users extends OktaClient {
   //public function userUpdate($something) {}
 
   public function userDeactivate($user_id) {
+    // TODO Wrap this around try catch.
+    // TODO handle exceptions.
     $response = $this->oktaClient->user->deactivate($user_id);
     return $response;
   }
