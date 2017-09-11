@@ -17,6 +17,9 @@ class Profile {
 
   /**
    * Constructor for the OKTA User Profile class.
+   *
+   * @param \Drupal\okta_api\Service\OktaClient $oktaClient
+   *   An OktaClient.
    */
   public function __construct(OktaClient $oktaClient) {
     $this->oktaClient = $oktaClient->Client;

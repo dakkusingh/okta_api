@@ -17,6 +17,9 @@ class Users {
 
   /**
    * Constructor for the Okta Users class.
+   *
+   * @param \Drupal\okta_api\Service\OktaClient $oktaClient
+   *   An OktaClient.
    */
   public function __construct(OktaClient $oktaClient) {
     $this->oktaClient = $oktaClient->Client;
