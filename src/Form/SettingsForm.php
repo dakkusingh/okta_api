@@ -69,16 +69,6 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('preview_domain'),
     ];
 
-    // TODO Remove this once module POC works.
-    //$foo = \Drupal::service('okta_api.users')->userCreate('dakku', 'singh', 'email@email');
-    //$foo2 = \Drupal::service('okta_api.users')->userGetByEmail('email@email');
-
-    //$foo = \Drupal::service('okta_api.users');
-    //$foo = \Drupal::service('okta_api.okta_client');
-
-    //ksm($foo);
-    //ksm($foo2);
-
     return parent::buildForm($form, $form_state);
   }
 
