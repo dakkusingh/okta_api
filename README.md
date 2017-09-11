@@ -23,7 +23,7 @@ In your custom service, you can use Dependency Injection
 ```
 my_module.my_service:
   class: Drupal\my_module\FooBarService
-  arguments: ["@okta_api.okta_client", "@okta_api.okta_users"]
+  arguments: ["@okta_api.okta_users"]
 ```
 ### Okta API Service without Dependency Injection
 Alternatively, just call the service without Dependency Injection.
