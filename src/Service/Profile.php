@@ -6,7 +6,7 @@ use Okta\Resource\User;
 use Okta\Exception;
 
 /**
- * Service class for User Profile
+ * Service class for User Profile.
  */
 class Profile {
 

@@ -6,7 +6,7 @@ use Okta\Exception;
 use Okta\Resource\User;
 
 /**
- * Service class for Users
+ * Service class for Users.
  */
 class Users {
 
@@ -24,6 +24,9 @@ class Users {
     $this->oktaConfig = $oktaClient->config;
   }
 
+  /**
+   * Create Okta User.
+   */
   public function userCreate($first_name, $last_name, $email_address) {
 
     $existingUser = $this->getUserIfExists($email_address);
@@ -50,7 +53,10 @@ class Users {
 
   }
 
-  private function getUserIfExists($email_address){
+  /**
+   * Check if Okta User exists.
+   */
+  private function getUserIfExists($email_address) {
     try {
       $existingUser = $this->userGetByEmail($email_address);
       if ($existingUser) {
@@ -67,6 +73,9 @@ class Users {
     return $user->save() ? TRUE : FALSE;
   }*/
 
+  /**
+   * Get Okta User by email.
+   */
   public function userGetByEmail($email_address) {
     try {
       $user = $this->user->get($email_address);
@@ -78,6 +87,9 @@ class Users {
     }
   }
 
+  /**
+   * Get all Okta Users.
+   */
   public function userGetAll() {
     // TODO Wrap this around try catch.
     // TODO handle exceptions.
@@ -85,6 +97,9 @@ class Users {
     return $users;
   }
 
+  /**
+   * Activate Okta User.
+   */
   public function userActivate($email_address) {
     try {
       $response = $this->user->activate($email_address);
@@ -99,6 +114,9 @@ class Users {
   // TODO Extend the CRUD
   //public function userUpdate($something) {}
 
+  /**
+   * Deactivate Okta User.
+   */
   public function userDeactivate($user_id) {
     // TODO Wrap this around try catch.
     // TODO handle exceptions.

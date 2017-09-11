@@ -7,7 +7,7 @@ use Okta\Exception as OktaException;
 use Drupal\Core\Config\ConfigFactory;
 
 /**
- * Service class for OktaClient
+ * Service class for OktaClient.
  */
 class OktaClient {
 
@@ -25,9 +25,9 @@ class OktaClient {
         $config->get('organisation_url'),
         $config->get('api_key'),
         [
-          // Don't auto-bootstrap the Okta resource properties
+          // Don't auto-bootstrap the Okta resource properties.
           'bootstrap' => false,
-          // Use the okta preview (oktapreview.com) domain
+          // Use the okta preview (oktapreview.com) domain.
           'preview' => $config->get('preview_domain'),
           //'headers' => [
           //  'Some-Header'    => 'Some value',
@@ -38,7 +38,7 @@ class OktaClient {
     }
     catch (OktaException $e) {
       // TODO handle exceptions.
-      ksm($e);
+      //ksm($e);
       //\Drupal::logger('okta_api')->warning("Failed to create Okta Client using API: @message",
       //  ['@message' => $e->getMessage()]);
     }
