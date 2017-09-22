@@ -2,7 +2,7 @@
 
 namespace Drupal\okta_api\Service;
 
-use Okta\Exception;
+use Okta\Exception as OktaException;
 use Okta\Resource\App;
 
 /**
@@ -31,8 +31,9 @@ class Apps {
     try {
       return $this->apps->get('');
     }
-    catch (Exception $e) {
-      // TODO: Handle exceptions.
+    catch (OktaException $e) {
+      $this->logError("Unable to get apps", $e);
+      return NULL;
     }
   }
 
@@ -49,8 +50,9 @@ class Apps {
     try {
       return $this->apps->get($appId);
     }
-    catch (Exception $e) {
-      // TODO: Handle exceptions.
+    catch (OktaException $e) {
+      $this->logError("Unable to get app $appId", $e);
+      return NULL;
     }
   }
 
@@ -64,16 +66,30 @@ class Apps {
    *   and optionally a profile. Example at:
    *   https://developer.okta.com/docs/api/resources/apps.html#request-example-23.
    *
-   * @return object
-   *   The response.
+   * @return object|bool
+   *   Returns FALSE if there was a problem or the response object if
+   *   successful.
    */
   public function assignUsersToApp($appId, array $users) {
     try {
       return $this->apps->assignUser($appId, $users);
     }
-    catch (Exception $e) {
-      // TODO: Handle exceptions.
+    catch (OktaException $e) {
+      $this->logError("Unable to assign user " . $users['id'] . " to app $appId", $e);
+      return FALSE;
     }
+  }
+
+  /**
+   * Logs an error to the Drupal error log.
+   *
+   * @param string $message
+   *   The error message.
+   * @param \Okta\Exception $e
+   *   The exception being handled.
+   */
+  private function logError($message, OktaException $e) {
+    \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
   }
 
 }
