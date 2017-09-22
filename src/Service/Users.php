@@ -2,7 +2,7 @@
 
 namespace Drupal\okta_api\Service;
 
-use Okta\Exception;
+use Okta\Exception as OktaException;
 use Okta\Resource\User;
 
 /**
@@ -10,10 +10,8 @@ use Okta\Resource\User;
  */
 class Users {
 
-  /**
-   * @var \Drupal\okta_api\Service\OktaClient
-   */
   public $oktaClient;
+  public $user;
 
   /**
    * Constructor for the Okta Users class.
@@ -24,11 +22,20 @@ class Users {
   public function __construct(OktaClient $oktaClient) {
     $this->oktaClient = $oktaClient->Client;
     $this->user = new User($oktaClient->Client);
-    $this->oktaConfig = $oktaClient->config;
   }
 
   /**
    * Create Okta User.
+   *
+   * @param string $first_name
+   *   First name.
+   * @param string $last_name
+   *   Last name.
+   * @param string $email_address
+   *   Email address.
+   *
+   * @return bool|object
+   *   Returns the user if creation was successful or FALSE if not.
    */
   public function userCreate($first_name, $last_name, $email_address) {
 
@@ -37,7 +44,6 @@ class Users {
       return $existingUser;
     }
 
-    // TODO Assign user to application
     try {
       $user = $this->user->create(
         [
@@ -49,11 +55,10 @@ class Users {
       );
       return $user;
     }
-    catch (Exception $e) {
-      // TODO handle exceptions.
-      return $e->getErrorSummary();
+    catch (OktaException $e) {
+      $this->logError("Unable to create user", $e);
+      return FALSE;
     }
-
   }
 
   /**
@@ -66,18 +71,31 @@ class Users {
         return $existingUser;
       }
     }
-    catch (Exception $e) {
+    catch (OktaException $e) {
       return FALSE;
     }
+
+    return FALSE;
   }
 
-  // TODO Extend the CRUD
-  /*public function userSave($user) {
-    return $user->save() ? TRUE : FALSE;
-  }*/
+  /**
+   * Save changes to an Okta User.
+   *
+   * @param \Okta\Resource\User $user
+   *   The Okta User to save.
+   */
+  public function userSave($user) {
+    // TODO: Add user save logic.
+  }
 
   /**
    * Get Okta User by email.
+   *
+   * @param string $email_address
+   *   Email address.
+   *
+   * @return null|object
+   *   Returns the Okta User.
    */
   public function userGetByEmail($email_address) {
     try {
@@ -85,8 +103,8 @@ class Users {
       return $user;
     }
     catch (OktaException $e) {
-      // TODO handle exceptions.
-      return $e->getErrorSummary();
+      $this->logError("Unable to get user", $e);
+      return NULL;
     }
   }
 
@@ -94,14 +112,24 @@ class Users {
    * Get all Okta Users.
    */
   public function userGetAll() {
-    // TODO Wrap this around try catch.
-    // TODO handle exceptions.
-    $users = $this->user->get();
-    return $users;
+    try {
+      $users = $this->user->get('');
+      return $users;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to get users", $e);
+      return NULL;
+    }
   }
 
   /**
    * Activate Okta User.
+   *
+   * @param string $email_address
+   *   The email address of the user to activate.
+   *
+   * @return bool|object
+   *   Returns FALSE if unsuccessful or a response object if successful.
    */
   public function userActivate($email_address) {
     try {
@@ -109,22 +137,41 @@ class Users {
       return $response;
     }
     catch (OktaException $e) {
-      // TODO handle exceptions.
-      return $e->getErrorSummary();
+      $this->logError("Unable to activate user $email_address", $e);
+      return FALSE;
     }
   }
 
-  // TODO Extend the CRUD
-  //public function userUpdate($something) {}
-
   /**
    * Deactivate Okta User.
+   *
+   * @param string $user_id
+   *   The User ID to deactivate.
+   *
+   * @return bool|\Okta\Resource\empty
+   *   Returns FALSE if unsuccessful or a response object if successful.
    */
   public function userDeactivate($user_id) {
-    // TODO Wrap this around try catch.
-    // TODO handle exceptions.
-    $response = $this->user->deactivate($user_id);
-    return $response;
+    try {
+      $response = $this->user->deactivate($user_id);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to deactivate user $user_id", $e);
+      return FALSE;
+    }
+  }
+
+  /**
+   * Logs an error to the Drupal error log.
+   *
+   * @param string $message
+   *   The error message.
+   * @param \Okta\Exception $e
+   *   The exception being handled.
+   */
+  private function logError($message, OktaException $e) {
+    \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
   }
 
 }
