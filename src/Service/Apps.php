@@ -81,6 +81,28 @@ class Apps {
   }
 
   /**
+   * Removes a specific user from an app in Okta.
+   *
+   * @param string $appId
+   *   The App ID.
+   * @param string $userId
+   *   The User ID.
+   *
+   * @return bool|object
+   *   Returns FALSE if there was a problem or the response object if
+   *   successful.
+   */
+  public function removeUserFromApp($appId, $userId) {
+    try {
+      return $this->apps->removeUser($appId, $userId);
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to remove user $userId from app $appId", $e);
+      return FALSE;
+    }
+  }
+
+  /**
    * Logs an error to the Drupal error log.
    *
    * @param string $message
