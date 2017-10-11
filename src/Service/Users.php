@@ -62,6 +62,26 @@ class Users {
   }
 
   /**
+   * Create many Okta users.
+   *
+   * @param array $users
+   *   An associative array of users containing firstName, lastName and email.
+   *
+   * @return array
+   *   Returns an array of created users.
+   */
+  public function userCreateMany(array $users) {
+
+    $createdUsers = [];
+
+    foreach ($users as $user) {
+      array_push($createdUsers, $this->userCreate($user['firstName'], $user['lastName'], $user['email']));
+    }
+
+    return $createdUsers;
+  }
+
+  /**
    * Check if Okta User exists.
    */
   private function getUserIfExists($email_address) {
