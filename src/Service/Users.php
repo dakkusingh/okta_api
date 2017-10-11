@@ -62,6 +62,35 @@ class Users {
   }
 
   /**
+   * Creates an Okta user and adds them to an app.
+   *
+   * @param string $first_name
+   *   First name.
+   * @param string $last_name
+   *   Last name.
+   * @param string $email_address
+   *   Email address.
+   * @param string $appId
+   *   App ID.
+   *
+   * @return bool|object
+   *   Returns the user if creation was successful or FALSE if not.
+   */
+  public function userCreateAndAssignToApp($first_name, $last_name, $email_address, $appId) {
+    $createdUser = $this->userCreate($first_name, $last_name, $email_address);
+    $appService = \Drupal::service('okta_api.apps');
+
+    $credentials = [
+      'id' => $createdUser->id,
+      'scope' => 'USER',
+      'credentials' => ['userName' => $createdUser->profile->email],
+    ];
+
+    $result = $appService->assignUsersToApp($appId, $credentials);
+    return $result;
+  }
+
+  /**
    * Create many Okta users.
    *
    * @param array $users
