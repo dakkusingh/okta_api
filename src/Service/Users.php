@@ -36,9 +36,10 @@ class Users {
    * @param bool $activate
    *   TRUE if the user should be activated after creation.
    *
-   * @return bool|object Returns the user if creation was successful or FALSE if not.
+   * @return bool|object
+   *   Returns the user if creation was successful or FALSE if not.
    */
-  public function userCreate($profile, $credentials = [], $provider = [], $activate = true) {
+  public function userCreate(array $profile, $credentials = [], $provider = [], $activate = TRUE) {
 
     $existingUser = $this->getUserIfExists($profile['email']);
 
@@ -59,17 +60,17 @@ class Users {
   /**
    * Builds a profile array for a user.
    *
-   * @param $first_name
+   * @param string $first_name
    *   First name.
-   * @param $last_name
+   * @param string $last_name
    *   Last name.
-   * @param $email_address
+   * @param string $email_address
    *   Email address.
-   * @param $login
+   * @param string $login
    *   Login.
    *
-   * @return array Returns the profile array.
-   * Returns the profile array.
+   * @return array
+   *   Returns the profile array.
    */
   public function buildProfile($first_name, $last_name, $email_address, $login) {
     $profile = [
@@ -85,15 +86,15 @@ class Users {
   /**
    * Builds a credentials array for a user.
    *
-   * @param $password
+   * @param string $password
    *   Password.
-   * @param array|NULL $recovery_question
+   * @param array|null $recovery_question
    *   An optional recovery question array containing 'question' and 'answer'.
    *
    * @return array
    *   Returns the credentials array.
    */
-  public function buildCredentials($password, array $recovery_question = null) {
+  public function buildCredentials($password, array $recovery_question = NULL) {
     $credentials = [
       "password" => $password,
       "recovery_question" => $recovery_question,
@@ -105,7 +106,9 @@ class Users {
   /**
    * Creates an Okta user and adds them to an app.
    *
-   * @param $profile
+   * @param string $appId
+   *   The Okta App ID to assign the user to.
+   * @param array $profile
    *   The user's profile.
    * @param array $credentials
    *   The user's credentials.
@@ -113,12 +116,11 @@ class Users {
    *   The authentication provider, if using.
    * @param bool $activate
    *   TRUE if the user should be activated after creation.
-   * @param string $appId
-   *   The Okta App ID to assign the user to.
    *
-   * @return bool|object Returns the user if creation was successful or FALSE if not.
+   * @return bool|object
+   *   Returns the user if creation was successful or FALSE if not.
    */
-  public function userCreateAndAssignToApp($profile, $credentials = [], $provider = [], $activate = true, $appId) {
+  public function userCreateAndAssignToApp($appId, array $profile, array $credentials = [], array $provider = [], $activate = TRUE) {
     $createdUser = $this->userCreate($profile, $credentials, $provider, $activate);
     $appService = \Drupal::service('okta_api.apps');
 
@@ -167,7 +169,7 @@ class Users {
     $createdUsers = [];
 
     foreach ($users as $user) {
-      array_push($createdUsers, $this->userCreateAndAssignToApp($user['profile'], $user['credentials'], $user['provider'], $user['activate'], $appId));
+      array_push($createdUsers, $this->userCreateAndAssignToApp($appId, $user['profile'], $user['credentials'], $user['provider'], $user['activate']));
     }
 
     return $createdUsers;
