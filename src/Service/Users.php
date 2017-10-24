@@ -239,19 +239,21 @@ class Users {
   /**
    * Activate Okta User.
    *
-   * @param string $email_address
-   *   The email address of the user to activate.
+   * @param string $uid
+   *   The ID of the user to activate.
+   * @param bool $sendEmail
+   *   Whether to send an activation email from Okta.
    *
    * @return bool|object
    *   Returns FALSE if unsuccessful or a response object if successful.
    */
-  public function userActivate($email_address) {
+  public function userActivate($uid, $sendEmail = FALSE) {
     try {
-      $response = $this->user->activate($email_address);
+      $response = $this->user->activate($uid, $sendEmail);
       return $response;
     }
     catch (OktaException $e) {
-      $this->logError("Unable to activate user $email_address", $e);
+      $this->logError("Unable to activate user $uid", $e);
       return FALSE;
     }
   }
