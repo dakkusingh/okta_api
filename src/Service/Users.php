@@ -25,34 +25,30 @@ class Users {
   }
 
   /**
-   * Create Okta User.
+   * Creates an Okta User.
    *
-   * @param string $first_name
-   *   First name.
-   * @param string $last_name
-   *   Last name.
-   * @param string $email_address
-   *   Email address.
+   * @param array $profile
+   *   The new user's profile.
+   * @param array|null $credentials
+   *   The new user's credentials.
+   * @param array|null $provider
+   *   The authentication provider, if using.
+   * @param bool $activate
+   *   TRUE if the user should be activated after creation.
    *
    * @return bool|object
    *   Returns the user if creation was successful or FALSE if not.
    */
-  public function userCreate($first_name, $last_name, $email_address) {
+  public function userCreate(array $profile, $credentials = [], $provider = [], $activate = TRUE) {
 
-    $existingUser = $this->getUserIfExists($email_address);
+    $existingUser = $this->getUserIfExists($profile['email']);
+
     if ($existingUser) {
       return $existingUser;
     }
 
     try {
-      $user = $this->user->create(
-        [
-          "firstName" => $first_name,
-          "lastName" => $last_name,
-          "email" => $email_address,
-          "login" => $email_address,
-        ]
-      );
+      $user = $this->user->create($profile, $credentials, $provider, $activate);
       return $user;
     }
     catch (OktaException $e) {
@@ -62,7 +58,7 @@ class Users {
   }
 
   /**
-   * Creates an Okta user and adds them to an app.
+   * Builds a profile array for a user.
    *
    * @param string $first_name
    *   First name.
@@ -70,14 +66,62 @@ class Users {
    *   Last name.
    * @param string $email_address
    *   Email address.
+   * @param string $login
+   *   Login.
+   *
+   * @return array
+   *   Returns the profile array.
+   */
+  public function buildProfile($first_name, $last_name, $email_address, $login) {
+    $profile = [
+      "firstName" => $first_name,
+      "lastName" => $last_name,
+      "email" => $email_address,
+      "login" => $login,
+    ];
+
+    return $profile;
+  }
+
+  /**
+   * Builds a credentials array for a user.
+   *
+   * @param string $password
+   *   Password.
+   * @param array|null $recovery_question
+   *   An optional recovery question array containing 'question' and 'answer'.
+   *
+   * @return array
+   *   Returns the credentials array.
+   */
+  public function buildCredentials($password, array $recovery_question = NULL) {
+    $credentials = [
+      "password" => $password,
+      "recovery_question" => $recovery_question,
+    ];
+
+    return $credentials;
+  }
+
+  /**
+   * Creates an Okta user and adds them to an app.
+   *
    * @param string $appId
-   *   App ID.
+   *   The Okta App ID to assign the user to.
+   * @param array $profile
+   *   The user's profile.
+   * @param array $credentials
+   *   The user's credentials.
+   * @param array $provider
+   *   The authentication provider, if using.
+   * @param bool $activate
+   *   TRUE if the user should be activated after creation.
    *
    * @return bool|object
    *   Returns the user if creation was successful or FALSE if not.
    */
-  public function userCreateAndAssignToApp($first_name, $last_name, $email_address, $appId) {
-    $createdUser = $this->userCreate($first_name, $last_name, $email_address);
+  public function userCreateAndAssignToApp($appId, array $profile, array $credentials = [], array $provider = [], $activate = TRUE) {
+    $createdUser = $this->userCreate($profile, $credentials, $provider, $activate);
     $appService = \Drupal::service('okta_api.apps');
 
     $credentials = [
@@ -104,7 +148,7 @@ class Users {
     $createdUsers = [];
 
     foreach ($users as $user) {
-      array_push($createdUsers, $this->userCreate($user['firstName'], $user['lastName'], $user['email']));
+      array_push($createdUsers, $this->userCreate($user['profile'], $user['credentials'], $user['provider'], $user['activate']));
     }
 
     return $createdUsers;
@@ -125,7 +169,7 @@ class Users {
     $createdUsers = [];
 
     foreach ($users as $user) {
-      array_push($createdUsers, $this->userCreateAndAssignToApp($user['firstName'], $user['lastName'], $user['email'], $appId));
+      array_push($createdUsers, $this->userCreateAndAssignToApp($appId, $user['profile'], $user['credentials'], $user['provider'], $user['activate']));
     }
 
     return $createdUsers;
@@ -195,19 +239,21 @@ class Users {
   /**
    * Activate Okta User.
    *
-   * @param string $email_address
-   *   The email address of the user to activate.
+   * @param string $uid
+   *   The ID of the user to activate.
+   * @param bool $sendEmail
+   *   Whether to send an activation email from Okta.
    *
    * @return bool|object
    *   Returns FALSE if unsuccessful or a response object if successful.
    */
-  public function userActivate($email_address) {
+  public function userActivate($uid, $sendEmail = FALSE) {
     try {
-      $response = $this->user->activate($email_address);
+      $response = $this->user->activate($uid, $sendEmail);
       return $response;
     }
     catch (OktaException $e) {
-      $this->logError("Unable to activate user $email_address", $e);
+      $this->logError("Unable to activate user $uid", $e);
       return FALSE;
     }
   }
