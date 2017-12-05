@@ -39,11 +39,11 @@ class SettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('okta_api.settings');
 
-    $form['api_key'] = [
+    $form['okta_api_key'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API Token'),
       '#description' => $this->t('The API token to use.'),
-      '#default_value' => $config->get('api_key'),
+      '#default_value' => $config->get('okta_api_key'),
     ];
 
     $form['organisation_url'] = [
@@ -77,7 +77,7 @@ class SettingsForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('okta_api.settings')
-      ->set('api_key', $form_state->getValue('api_key'))
+      ->set('okta_api_key', $form_state->getValue('okta_api_key'))
       ->set('default_group_id', $form_state->getValue('default_group_id'))
       ->set('organisation_url', $form_state->getValue('organisation_url'))
       ->set('preview_domain', $form_state->getValue('preview_domain'))
