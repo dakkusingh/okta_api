@@ -2,9 +2,12 @@
 
 /**
  * @file
- * Contains okta_api.module.
+ * Contains install and update related functions for okta_api.
  */
 
+/**
+ * Updates name of api_key setting.
+ */
 function okta_api_update_8001() {
   $config = \Drupal::configFactory()->getEditable('okta_api.settings');
   $oldKey = $config->get('api_key');
