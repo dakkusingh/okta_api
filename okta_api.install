@@ -8,7 +8,7 @@
 /**
  * Updates name of api_key setting.
  */
-function okta_api_update_8001() {
+function okta_api_update_8201() {
   $config = \Drupal::configFactory()->getEditable('okta_api.settings');
   $oldKey = $config->get('api_key');
 
