@@ -20,7 +20,7 @@ class OktaClient {
 
     $this->Client = new Client(
         $config->get('organisation_url'),
-        $config->get('api_key'),
+        $config->get('okta_api_key'),
         [
           // Don't auto-bootstrap the Okta resource properties.
           'bootstrap' => FALSE,
