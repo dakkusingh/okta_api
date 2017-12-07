@@ -48,9 +48,16 @@ class SettingsForm extends ConfigFormBase {
 
     $form['organisation_url'] = [
       '#type' => 'textfield',
+      '#title' => $this->t('Your Okta organisation'),
+      '#description' => $this->t('The the organisation you have set up in Okta'),
+      '#default_value' => $config->get('organisation_url'),
+    ];
+
+    $form['okta_domain'] = [
+      '#type' => 'textfield',
       '#title' => $this->t('Your Okta domain'),
       '#description' => $this->t('The the domain your organisation uses to log into Okta'),
-      '#default_value' => $config->get('organisation_url'),
+      '#default_value' => $config->get('okta_domain'),
     ];
 
     $form['default_group_id'] = [
@@ -80,6 +87,7 @@ class SettingsForm extends ConfigFormBase {
       ->set('okta_api_key', $form_state->getValue('okta_api_key'))
       ->set('default_group_id', $form_state->getValue('default_group_id'))
       ->set('organisation_url', $form_state->getValue('organisation_url'))
+      ->set('okta_domain', $form_state->getValue('okta_domain'))
       ->set('preview_domain', $form_state->getValue('preview_domain'))
       ->save();
 
