@@ -4,14 +4,6 @@
   "type": "drupal-module",
   "minimum-stability": "dev",
   "require": {
-    "iodatacenters/oktasdk": "1.2.10"
-  },
-  "extra": {
-    "patches": {
-      "iodatacenters/oktasdk" : {
-        "https://github.com/iodatacenters/oktasdk-php/pull/30":
-        "https://patch-diff.githubusercontent.com/raw/iodatacenters/oktasdk-php/pull/30.diff"
-      }
-    }
+    "iodatacenters/oktasdk": "1.2.11"
   }
 }
