@@ -279,6 +279,121 @@ class Users {
   }
 
   /**
+   * This operation will transition the user to the status of PASSWORD_EXPIRED
+   * and the user will be required to change their password at their next
+   * login. If tempPassword is passed, the user's password is reset to a
+   * temporary password that is returned, and then the temporary password is
+   * expired.
+   *
+   * @param  string $uid           User ID
+   * @param  boolean $tempPassword Sets the user's password to a temporary
+   *                               password, if true
+   *
+   * @return object                User object
+   */
+  public function userExpirePassword($uid, $tempPassword = TRUE) {
+    try {
+      $response = $this->user->expirePassword($uid, $tempPassword);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to expire password for user $uid", $e);
+      return FALSE;
+    }
+  }
+
+  /**
+   * Changes a user's password by validating the user's current password. This
+   * operation can only be performed on users in STAGED, ACTIVE,
+   * PASSWORD_EXPIRED, or RECOVERY status that have a valid password
+   * credential
+   *
+   * @param  string $uid     User ID
+   * @param  string $oldPass Current password for user
+   * @param  string $newPass New passwor for user
+   *
+   * @return object          User credentials object
+   */
+  public function userChangePassword($uid, $oldPass, $newPass) {
+    try {
+      $response = $this->user->changePassword($uid, $oldPass, $newPass);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to change password for user $uid", $e);
+      return FALSE;
+    }
+  }
+
+  /**
+   * Force Changes a user's password by doing user::update()
+   *
+   * @param  string $uid     User ID
+   * @param  string $newPass New password for user
+   *
+   * @return object          User credentials object
+   */
+  public function userForceChangePassword($uid, $newPass) {
+    // Create a new credentials array with new password.
+    $credentials = ["password" => $newPass];
+    try {
+      $response = $this->user->update($uid, NULL, $credentials);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to change password for user $uid", $e);
+      return FALSE;
+    }
+  }
+
+  /**
+   * Force Changes a user's security by doing user::update()
+   *
+   * @param  string $uid     User ID
+   * @param  string $question New security question for user
+   * @param  string $answer New security answer for user
+   *
+   * @return object          User credentials object
+   */
+  public function userForceChangeSecurity($uid, $question, $answer) {
+    // Create a new credentials array with new question.
+    $credentials = [
+      'recovery_question' => [
+        'question' => $question,
+        'answer' => $answer,
+      ],
+    ];
+    try {
+      $response = $this->user->update($uid, NULL, $credentials);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to change security question for user $uid", $e);
+      return FALSE;
+    }
+  }
+
+  /**
+   * Update a user's profile and/or credentials with partial update semantics.
+   *
+   * @param  string $uid         ID of user to update
+   * @param  array  $profile     Array of user profile properties
+   * @param  array  $credentials Array of credential properties
+   *
+   * @return object              Updated user object
+   */
+  public function update($uid, array $profile = null, array $credentials = null) {
+    try {
+      $response = $this->user->update($uid, $profile, $credentials);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to update user $uid", $e);
+      return FALSE;
+    }
+  }
+
+  /**
    * Logs an error to the Drupal error log.
    *
    * @param string $message
@@ -289,5 +404,43 @@ class Users {
   private function logError($message, OktaException $e) {
     \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
   }
+
+
+  /**
+   * Example on how to change user password
+   * This sets a temporary password first and
+   * uses this temp pass as the old password.
+   */
+  //  private function oktaResetPassword($oktaUserEmail, $newPassword) {
+  //    $response = $this->oktaUsers->userExpirePassword($oktaUserEmail);
+  //    $tempPassword = $response->tempPassword;
+  //    $this->oktaUsers->userChangePassword($oktaUserEmail, $tempPassword, $newPassword);
+  //  }
+
+  /**
+   * Example on how to change user password using authn
+   * This sets a temporary password first and
+   * uses this temp pass as the old password.
+   */
+//  public function userResetForgottenPassword($userMail, $newPassword) {
+//    try {
+//      $recovery = $this->authn->forgotPassword($userMail);
+//      if ($recovery) {
+//        $recoveryToken = $recovery->recoveryToken;
+//        $stateTokenObj = $this->authn->verifyRecoveryToken($recoveryToken);
+//        try {
+//          $this->authn->resetPassword($stateTokenObj->stateToken, $newPassword);
+//        }
+//        catch (OktaException $e) {
+//          $this->logError("Unable set new password for $userMail", $e);
+//        }
+//      }
+//      return TRUE;
+//    }
+//    catch (OktaException $e) {
+//      $this->logError("Unable set reset password for $userMail", $e);
+//      return FALSE;
+//    }
+//  }
 
 }
