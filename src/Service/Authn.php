@@ -10,7 +10,18 @@ use Okta\Resource\Authentication;
  */
 class Authn {
 
+  /**
+   * Okta Client.
+   *
+   * @var \Okta\Client
+   */
   public $oktaClient;
+
+  /**
+   * Okta Auth.
+   *
+   * @var \Okta\Resource\Authentication
+   */
   public $authn;
 
   /**
@@ -25,15 +36,20 @@ class Authn {
   }
 
   /**
+   * Starts a new password recovery.
+   *
    * Starts a new password recovery transaction for a given user and issues a
    * recovery token that can be used to reset a user's password.
    *
-   * @param  string $username   User's non-qualified short-name or unique
-   *                            fully-qualified login
-   * @param  string $relayState Optional state value that is persisted for the
-   *                            lifetime of the recovery transaction
+   * @param string $username
+   *   User's non-qualified short-name or unique
+   *   fully-qualified login.
+   * @param string $relayState
+   *   Optional state value that is persisted for the
+   *   lifetime of the recovery transaction.
    *
-   * @return object             Recovery Transaction Object
+   * @return object
+   *   Recovery Transaction Object
    */
   public function forgotPassword($username, $relayState = NULL) {
     try {
@@ -47,13 +63,18 @@ class Authn {
   }
 
   /**
+   * Resets a user's password.
+   *
    * Resets a user's password to complete a recovery transaction with a
    * PASSWORD_RESET state.
    *
-   * @param  string $stateToken  State token for current transaction
-   * @param  string $newPassword User's new password
+   * @param string $stateToken
+   *   State token for current transaction.
+   * @param string $newPassword
+   *   User's new password.
    *
-   * @return object              Recovery Transaction Object
+   * @return object
+   *   Recovery Transaction Object
    */
   public function resetPassword($stateToken, $newPassword) {
     try {
@@ -67,13 +88,17 @@ class Authn {
   }
 
   /**
+   * Validates a recovery token.
+   *
    * Validates a recovery token that was distributed to the end-user to
    * continue the recovery transaction.
    *
-   * @param  string $recoveryToken Recovery token that was distributed to
-   *                               end-user via out-of-band mechanism such as email
+   * @param string $recoveryToken
+   *   Recovery token that was distributed to
+   *   end-user via out-of-band mechanism such as email.
    *
-   * @return object                Recovery Transaction Object
+   * @return object
+   *   Recovery Transaction Object
    */
   public function verifyRecoveryToken($recoveryToken) {
     try {

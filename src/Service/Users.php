@@ -6,18 +6,31 @@ use Okta\Exception as OktaException;
 use Okta\Resource\User;
 
 /**
- * Service class for Users.
+ * Class Users.
+ *
+ * @package Drupal\okta_api\Service
  */
 class Users {
 
+  /**
+   * Okta Client.
+   *
+   * @var \Okta\Client
+   */
   public $oktaClient;
+
+  /**
+   * Okta User Resource.
+   *
+   * @var \Okta\Resource\User
+   */
   public $user;
 
   /**
-   * Constructor for the Okta Users class.
+   * Users constructor.
    *
    * @param \Drupal\okta_api\Service\OktaClient $oktaClient
-   *   An OktaClient.
+   *   Okta Client.
    */
   public function __construct(OktaClient $oktaClient) {
     $this->oktaClient = $oktaClient->Client;
@@ -120,7 +133,11 @@ class Users {
    * @return bool|object
    *   Returns the user if creation was successful or FALSE if not.
    */
-  public function userCreateAndAssignToApp($appId, array $profile, array $credentials = [], array $provider = [], $activate = TRUE) {
+  public function userCreateAndAssignToApp($appId,
+                                           array $profile,
+                                           array $credentials = [],
+                                           array $provider = [],
+                                           $activate = TRUE) {
     $createdUser = $this->userCreate($profile, $credentials, $provider, $activate);
     $appService = \Drupal::service('okta_api.apps');
 
@@ -148,7 +165,15 @@ class Users {
     $createdUsers = [];
 
     foreach ($users as $user) {
-      array_push($createdUsers, $this->userCreate($user['profile'], $user['credentials'], $user['provider'], $user['activate']));
+      array_push(
+        $createdUsers,
+        $this->userCreate(
+          $user['profile'],
+          $user['credentials'],
+          $user['provider'],
+          $user['activate']
+        )
+      );
     }
 
     return $createdUsers;
@@ -169,7 +194,16 @@ class Users {
     $createdUsers = [];
 
     foreach ($users as $user) {
-      array_push($createdUsers, $this->userCreateAndAssignToApp($appId, $user['profile'], $user['credentials'], $user['provider'], $user['activate']));
+      array_push(
+        $createdUsers,
+        $this->userCreateAndAssignToApp(
+          $appId,
+          $user['profile'],
+          $user['credentials'],
+          $user['provider'],
+          $user['activate']
+        )
+      );
     }
 
     return $createdUsers;
@@ -195,7 +229,7 @@ class Users {
   /**
    * Save changes to an Okta User.
    *
-   * @param \Okta\Resource\User $user
+   * @param object $user
    *   The Okta User to save.
    */
   public function userSave($user) {
@@ -264,7 +298,7 @@ class Users {
    * @param string $user_id
    *   The User ID to deactivate.
    *
-   * @return bool|\Okta\Resource\empty
+   * @return bool|object
    *   Returns FALSE if unsuccessful or a response object if successful.
    */
   public function userDeactivate($user_id) {
@@ -279,17 +313,22 @@ class Users {
   }
 
   /**
+   * User Expire Password.
+   *
    * This operation will transition the user to the status of PASSWORD_EXPIRED
    * and the user will be required to change their password at their next
    * login. If tempPassword is passed, the user's password is reset to a
    * temporary password that is returned, and then the temporary password is
    * expired.
    *
-   * @param  string $uid           User ID
-   * @param  boolean $tempPassword Sets the user's password to a temporary
-   *                               password, if true
+   * @param string $uid
+   *   User ID.
+   * @param bool $tempPassword
+   *   Sets the user's password to a temporary
+   *   password, if true.
    *
-   * @return object                User object
+   * @return object
+   *   User object
    */
   public function userExpirePassword($uid, $tempPassword = TRUE) {
     try {
@@ -303,16 +342,22 @@ class Users {
   }
 
   /**
+   * User Change Password.
+   *
    * Changes a user's password by validating the user's current password. This
    * operation can only be performed on users in STAGED, ACTIVE,
    * PASSWORD_EXPIRED, or RECOVERY status that have a valid password
-   * credential
+   * credential.
    *
-   * @param  string $uid     User ID
-   * @param  string $oldPass Current password for user
-   * @param  string $newPass New passwor for user
+   * @param string $uid
+   *   User ID.
+   * @param string $oldPass
+   *   Current password for user.
+   * @param string $newPass
+   *   New passwor for user.
    *
-   * @return object          User credentials object
+   * @return object
+   *   User credentials object
    */
   public function userChangePassword($uid, $oldPass, $newPass) {
     try {
@@ -328,10 +373,13 @@ class Users {
   /**
    * Force Changes a user's password by doing user::update()
    *
-   * @param  string $uid     User ID
-   * @param  string $newPass New password for user
+   * @param string $uid
+   *   User ID.
+   * @param string $newPass
+   *   New password for user.
    *
-   * @return object          User credentials object
+   * @return object
+   *   User credentials object
    */
   public function userForceChangePassword($uid, $newPass) {
     // Create a new credentials array with new password.
@@ -349,11 +397,15 @@ class Users {
   /**
    * Force Changes a user's security by doing user::update()
    *
-   * @param  string $uid     User ID
-   * @param  string $question New security question for user
-   * @param  string $answer New security answer for user
+   * @param string $uid
+   *   User ID.
+   * @param string $question
+   *   New security question for user.
+   * @param string $answer
+   *   New security answer for user.
    *
-   * @return object          User credentials object
+   * @return object
+   *   User credentials object
    */
   public function userForceChangeSecurity($uid, $question, $answer) {
     // Create a new credentials array with new question.
@@ -376,13 +428,17 @@ class Users {
   /**
    * Update a user's profile and/or credentials with partial update semantics.
    *
-   * @param  string $uid         ID of user to update
-   * @param  array  $profile     Array of user profile properties
-   * @param  array  $credentials Array of credential properties
+   * @param string $uid
+   *   ID of user to update.
+   * @param array $profile
+   *   Array of user profile properties.
+   * @param array $credentials
+   *   Array of credential properties.
    *
-   * @return object              Updated user object
+   * @return object
+   *   Updated user object
    */
-  public function update($uid, array $profile = null, array $credentials = null) {
+  public function update($uid, array $profile = NULL, array $credentials = NULL) {
     try {
       $response = $this->user->update($uid, $profile, $credentials);
       return $response;
@@ -405,42 +461,41 @@ class Users {
     \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
   }
 
-
+  // @codingStandardsIgnoreStart
   /**
    * Example on how to change user password
    * This sets a temporary password first and
    * uses this temp pass as the old password.
    */
-  //  private function oktaResetPassword($oktaUserEmail, $newPassword) {
+  // Private function oktaResetPassword($oktaUserEmail, $newPassword) {
   //    $response = $this->oktaUsers->userExpirePassword($oktaUserEmail);
   //    $tempPassword = $response->tempPassword;
   //    $this->oktaUsers->userChangePassword($oktaUserEmail, $tempPassword, $newPassword);
-  //  }
-
+  //  }.
   /**
    * Example on how to change user password using authn
    * This sets a temporary password first and
    * uses this temp pass as the old password.
    */
-//  public function userResetForgottenPassword($userMail, $newPassword) {
-//    try {
-//      $recovery = $this->authn->forgotPassword($userMail);
-//      if ($recovery) {
-//        $recoveryToken = $recovery->recoveryToken;
-//        $stateTokenObj = $this->authn->verifyRecoveryToken($recoveryToken);
-//        try {
-//          $this->authn->resetPassword($stateTokenObj->stateToken, $newPassword);
-//        }
-//        catch (OktaException $e) {
-//          $this->logError("Unable set new password for $userMail", $e);
-//        }
-//      }
-//      return TRUE;
-//    }
-//    catch (OktaException $e) {
-//      $this->logError("Unable set reset password for $userMail", $e);
-//      return FALSE;
-//    }
-//  }
-
+  // Public function userResetForgottenPassword($userMail, $newPassword) {
+  //    try {
+  //      $recovery = $this->authn->forgotPassword($userMail);
+  //      if ($recovery) {
+  //        $recoveryToken = $recovery->recoveryToken;
+  //        $stateTokenObj = $this->authn->verifyRecoveryToken($recoveryToken);
+  //        try {
+  //          $this->authn->resetPassword($stateTokenObj->stateToken, $newPassword);
+  //        }
+  //        catch (OktaException $e) {
+  //          $this->logError("Unable set new password for $userMail", $e);
+  //        }
+  //      }
+  //      return TRUE;
+  //    }
+  //    catch (OktaException $e) {
+  //      $this->logError("Unable set reset password for $userMail", $e);
+  //      return FALSE;
+  //    }
+  //  }
+  // @codingStandardsIgnoreEnd
 }

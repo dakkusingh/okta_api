@@ -3,7 +3,6 @@
 namespace Drupal\okta_api\Service;
 
 use Okta\Resource\User;
-use Okta\Exception;
 
 /**
  * Service class for User Profile.
@@ -11,15 +10,17 @@ use Okta\Exception;
 class Profile {
 
   /**
-   * @var \Drupal\okta_api\Service\OktaClient
+   * Okta Client.
+   *
+   * @var \Okta\Client
    */
   public $oktaClient;
 
   /**
-   * Constructor for the OKTA User Profile class.
+   * Profile constructor.
    *
    * @param \Drupal\okta_api\Service\OktaClient $oktaClient
-   *   An OktaClient.
+   *   Okta Client.
    */
   public function __construct(OktaClient $oktaClient) {
     $this->oktaClient = $oktaClient->Client;
@@ -27,22 +28,25 @@ class Profile {
     $this->oktaConfig = $oktaClient->config;
   }
 
-  // TODO Extend the Profile
-  //public function profileGet($something) {}
-
-  // TODO Extend the Profile
-  public function profileSet($first_name, $last_name, $email_address, $user) {
-    // TODO Extend the Profile, the code below needs refactoring.
-    /*$this->profile = new UserProfile();
-
-    $this->profile->setFirstName($first_name)
-      ->setLastName($last_name)
-      ->setLogin($email_address)
-      ->setEmail($email_address);
-
-    $user->setProfile($this->profile);
-
-    return $user;*/
-  }
+  // @codingStandardsIgnoreStart
+  //
+  //  // TODO Extend the Profile
+  //  //public function profileGet($something) {}
+  //
+  //  // TODO Extend the Profile
+  //  public function profileSet($first_name, $last_name, $email_address, $user) {
+  //    // TODO Extend the Profile, the code below needs refactoring.
+  //    /*$this->profile = new UserProfile();
+  //
+  //    $this->profile->setFirstName($first_name)
+  //      ->setLastName($last_name)
+  //      ->setLogin($email_address)
+  //      ->setEmail($email_address);
+  //
+  //    $user->setProfile($this->profile);
+  //
+  //    return $user;*/
+  //  }
+  // @codingStandardsIgnoreEnd
 
 }

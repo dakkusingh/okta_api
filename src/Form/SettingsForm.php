@@ -71,7 +71,7 @@ class SettingsForm extends ConfigFormBase {
     $form['preview_domain'] = [
       '#type' => 'checkbox',
       '#title' => 'Use Okta preview domain',
-      '#description' => 'If checked, API will use the Okta preview (oktapreview.com) domain.',
+      '#description' => $this->t('If checked, API will use the Okta preview (oktapreview.com) domain.'),
       '#return_value' => TRUE,
       '#default_value' => $config->get('preview_domain'),
     ];
