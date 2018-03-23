@@ -1,4 +1,6 @@
 # Okta API Integration
+[![CircleCI](https://circleci.com/gh/dakkusingh/okta_api.svg?style=svg)](https://circleci.com/gh/dakkusingh/okta_api)
+
 The Okta API Integration Module provides Okta API functionality as 
 Drupal Services to manage the following:
 
