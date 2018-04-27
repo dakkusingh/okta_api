@@ -55,7 +55,7 @@ class Users {
    *   The new user's profile.
    * @param array|null $credentials
    *   The new user's credentials.
-   * @param array|null $provider
+   * @param array $provider
    *   The authentication provider, if using.
    * @param bool $activate
    *   TRUE if the user should be activated after creation.
@@ -63,7 +63,7 @@ class Users {
    * @return bool|object
    *   Returns the user if creation was successful or FALSE if not.
    */
-  public function userCreate(array $profile, $credentials = [], $provider = [], $activate = TRUE) {
+  public function userCreate(array $profile, $credentials = [], array $provider = NULL, $activate = TRUE) {
 
     $existingUser = $this->getUserIfExists($profile['email']);
 
