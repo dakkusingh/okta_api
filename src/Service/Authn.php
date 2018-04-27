@@ -13,7 +13,7 @@ class Authn {
   /**
    * Okta Client.
    *
-   * @var \Okta\Client
+   * @var \Drupal\okta_api\Service\OktaClient
    */
   public $oktaClient;
 
@@ -31,7 +31,7 @@ class Authn {
    *   An OktaClient.
    */
   public function __construct(OktaClient $oktaClient) {
-    $this->oktaClient = $oktaClient->Client;
+    $this->oktaClient = $oktaClient;
     $this->authn = new Authentication($oktaClient->Client);
   }
 
@@ -54,6 +54,7 @@ class Authn {
   public function forgotPassword($username, $relayState = NULL) {
     try {
       $recovery = $this->authn->forgotPassword($username, NULL, $relayState);
+      $this->oktaClient->debug($recovery, 'response');
       return $recovery;
     }
     catch (OktaException $e) {
@@ -79,6 +80,7 @@ class Authn {
   public function resetPassword($stateToken, $newPassword) {
     try {
       $reset = $this->authn->resetPassword($stateToken, $newPassword);
+      $this->oktaClient->debug($reset, 'response');
       return $reset;
     }
     catch (OktaException $e) {
@@ -102,7 +104,9 @@ class Authn {
    */
   public function verifyRecoveryToken($recoveryToken) {
     try {
-      return $this->authn->verifyRecoveryToken($recoveryToken);
+      $response = $this->authn->verifyRecoveryToken($recoveryToken);
+      $this->oktaClient->debug($response, 'response');
+      return $response;
     }
     catch (OktaException $e) {
       $this->logError("Authn error - couldnt verifyRecoveryToken", $e);
@@ -119,6 +123,7 @@ class Authn {
    *   The exception being handled.
    */
   private function logError($message, OktaException $e) {
+    $this->oktaClient->debug($e, 'exception');
     \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
   }
 

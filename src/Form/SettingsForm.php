@@ -76,6 +76,26 @@ class SettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('preview_domain'),
     ];
 
+    // Check for devel module.
+    $devel_module_present = \Drupal::moduleHandler()->moduleExists('devel');
+
+    // Add debugging options.
+    $form['debug_response'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Debug OKTA Responses (requires Devel module)'),
+      '#description' => $this->t('Show OKTA Responses'),
+      '#default_value' => $config->get('debug_response') && $devel_module_present,
+      '#disabled' => !$devel_module_present,
+    ];
+
+    $form['debug_exception'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Debug OKTA Exception (requires Devel module)'),
+      '#description' => $this->t('Show OKTA Exception'),
+      '#default_value' => $config->get('debug_exception') && $devel_module_present,
+      '#disabled' => !$devel_module_present,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -89,6 +109,8 @@ class SettingsForm extends ConfigFormBase {
       ->set('organisation_url', $form_state->getValue('organisation_url'))
       ->set('okta_domain', $form_state->getValue('okta_domain'))
       ->set('preview_domain', $form_state->getValue('preview_domain'))
+      ->set('debug_response', $form_state->getValue('debug_response'))
+      ->set('debug_exception', $form_state->getValue('debug_exception'))
       ->save();
 
     parent::submitForm($form, $form_state);

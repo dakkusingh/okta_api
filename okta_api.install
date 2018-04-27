@@ -18,3 +18,13 @@ function okta_api_update_8201() {
     $config->save();
   }
 }
+
+/**
+ * Add debugging option.
+ */
+function okta_api_update_8202() {
+  $config = \Drupal::configFactory()->getEditable('okta_api.settings');
+  $config->set('debug_response', FALSE);
+  $config->set('debug_exception', FALSE);
+  $config->save();
+}

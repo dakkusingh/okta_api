@@ -15,7 +15,7 @@ class Users {
   /**
    * Okta Client.
    *
-   * @var \Okta\Client
+   * @var \Drupal\okta_api\Service\OktaClient
    */
   public $oktaClient;
 
@@ -33,7 +33,7 @@ class Users {
    *   Okta Client.
    */
   public function __construct(OktaClient $oktaClient) {
-    $this->oktaClient = $oktaClient->Client;
+    $this->oktaClient = $oktaClient;
     $this->user = new User($oktaClient->Client);
   }
 
@@ -62,6 +62,7 @@ class Users {
 
     try {
       $user = $this->user->create($profile, $credentials, $provider, $activate);
+      $this->oktaClient->debug($user, 'response');
       return $user;
     }
     catch (OktaException $e) {
@@ -148,6 +149,7 @@ class Users {
     ];
 
     $result = $appService->assignUsersToApp($appId, $credentials);
+    $this->oktaClient->debug($result, 'response');
     return $result;
   }
 
@@ -248,6 +250,7 @@ class Users {
   public function userGetByEmail($email_address) {
     try {
       $user = $this->user->get($email_address);
+      $this->oktaClient->debug($user, 'response');
       return $user;
     }
     catch (OktaException $e) {
@@ -262,6 +265,7 @@ class Users {
   public function userGetAll() {
     try {
       $users = $this->user->get('');
+      $this->oktaClient->debug($users, 'response');
       return $users;
     }
     catch (OktaException $e) {
@@ -284,6 +288,7 @@ class Users {
   public function userActivate($uid, $sendEmail = FALSE) {
     try {
       $response = $this->user->activate($uid, $sendEmail);
+      $this->oktaClient->debug($response, 'response');
       return $response;
     }
     catch (OktaException $e) {
@@ -304,6 +309,7 @@ class Users {
   public function userDeactivate($user_id) {
     try {
       $response = $this->user->deactivate($user_id);
+      $this->oktaClient->debug($response, 'response');
       return $response;
     }
     catch (OktaException $e) {
@@ -333,6 +339,7 @@ class Users {
   public function userExpirePassword($uid, $tempPassword = TRUE) {
     try {
       $response = $this->user->expirePassword($uid, $tempPassword);
+      $this->oktaClient->debug($response, 'response');
       return $response;
     }
     catch (OktaException $e) {
@@ -362,6 +369,7 @@ class Users {
   public function userChangePassword($uid, $oldPass, $newPass) {
     try {
       $response = $this->user->changePassword($uid, $oldPass, $newPass);
+      $this->oktaClient->debug($response, 'response');
       return $response;
     }
     catch (OktaException $e) {
@@ -386,6 +394,7 @@ class Users {
     $credentials = ["password" => $newPass];
     try {
       $response = $this->user->update($uid, NULL, $credentials);
+      $this->oktaClient->debug($response, 'response');
       return $response;
     }
     catch (OktaException $e) {
@@ -417,6 +426,7 @@ class Users {
     ];
     try {
       $response = $this->user->update($uid, NULL, $credentials);
+      $this->oktaClient->debug($response, 'response');
       return $response;
     }
     catch (OktaException $e) {
@@ -441,6 +451,7 @@ class Users {
   public function update($uid, array $profile = NULL, array $credentials = NULL) {
     try {
       $response = $this->user->update($uid, $profile, $credentials);
+      $this->oktaClient->debug($response, 'response');
       return $response;
     }
     catch (OktaException $e) {
@@ -458,6 +469,7 @@ class Users {
    *   The exception being handled.
    */
   private function logError($message, OktaException $e) {
+    $this->oktaClient->debug($e, 'exception');
     \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
   }
 

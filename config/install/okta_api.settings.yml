@@ -2,4 +2,6 @@ okta_api_key: ''
 default_group_id: ''
 organisation_url: ''
 okta_domain: ''
-preview_domain: false
+preview_domain: FALSE
+debug_response: FALSE
+debug_exception: FALSE

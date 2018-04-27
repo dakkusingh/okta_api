@@ -12,7 +12,7 @@ class Profile {
   /**
    * Okta Client.
    *
-   * @var \Okta\Client
+   * @var \Drupal\okta_api\Service\OktaClient
    */
   public $oktaClient;
 
@@ -23,7 +23,7 @@ class Profile {
    *   Okta Client.
    */
   public function __construct(OktaClient $oktaClient) {
-    $this->oktaClient = $oktaClient->Client;
+    $this->oktaClient = $oktaClient;
     $this->user = new User($oktaClient->Client);
     $this->oktaConfig = $oktaClient->config;
   }

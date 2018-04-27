@@ -12,6 +12,13 @@ class Apps {
   protected $apps;
 
   /**
+   * Okta Client.
+   *
+   * @var \Drupal\okta_api\Service\OktaClient
+   */
+  public $oktaClient;
+
+  /**
    * Apps constructor.
    *
    * @param \Drupal\okta_api\Service\OktaClient $oktaClient
@@ -19,6 +26,7 @@ class Apps {
    */
   public function __construct(OktaClient $oktaClient) {
     $this->apps = new App($oktaClient->Client);
+    $this->oktaClientWrapper = $oktaClient;
   }
 
   /**
@@ -29,7 +37,9 @@ class Apps {
    */
   public function getAllApps() {
     try {
-      return $this->apps->get('');
+      $response = $this->apps->get('');
+      $this->oktaClient->debug($response, 'response');
+      return $response;
     }
     catch (OktaException $e) {
       $this->logError("Unable to get apps", $e);
@@ -48,7 +58,9 @@ class Apps {
    */
   public function getAppById($appId) {
     try {
-      return $this->apps->get($appId);
+      $response = $this->apps->get($appId);
+      $this->oktaClient->debug($response, 'response');
+      return $response;
     }
     catch (OktaException $e) {
       $this->logError("Unable to get app $appId", $e);
@@ -72,7 +84,9 @@ class Apps {
    */
   public function assignUsersToApp($appId, array $users) {
     try {
-      return $this->apps->assignUser($appId, $users);
+      $response = $this->apps->assignUser($appId, $users);
+      $this->oktaClient->debug($response, 'response');
+      return $response;
     }
     catch (OktaException $e) {
       $this->logError("Unable to assign user " . $users['id'] . " to app $appId", $e);
@@ -94,7 +108,9 @@ class Apps {
    */
   public function removeUserFromApp($appId, $userId) {
     try {
-      return $this->apps->removeUser($appId, $userId);
+      $response = $this->apps->removeUser($appId, $userId);
+      $this->oktaClient->debug($response, 'response');
+      return $response;
     }
     catch (OktaException $e) {
       $this->logError("Unable to remove user $userId from app $appId", $e);
@@ -111,6 +127,7 @@ class Apps {
    *   The exception being handled.
    */
   private function logError($message, OktaException $e) {
+    $this->oktaClient->debug($e, 'exception');
     \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
   }
 
