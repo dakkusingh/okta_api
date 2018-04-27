@@ -26,7 +26,7 @@ class Apps {
    */
   public function __construct(OktaClient $oktaClient) {
     $this->apps = new App($oktaClient->Client);
-    $this->oktaClientWrapper = $oktaClient;
+    $this->oktaClient = $oktaClient;
   }
 
   /**
