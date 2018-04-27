@@ -124,7 +124,12 @@ class Authn {
    */
   private function logError($message, OktaException $e) {
     $this->oktaClient->debug($e, 'exception');
-    \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
+    $this->oktaClient->loggerFactory->get('okta_api')->error(
+      "@message - @exception", [
+        '@message' => $message,
+        '@exception' => $e->getErrorSummary(),
+      ]
+    );
   }
 
 }

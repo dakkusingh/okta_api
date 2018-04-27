@@ -2,6 +2,8 @@
 
 namespace Drupal\okta_api\Service;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use Okta\Client;
 use Drupal\Core\Config\ConfigFactory;
 
@@ -14,10 +16,21 @@ class OktaClient {
 
   /**
    * Create the Okta API client.
+   *
+   * @param \Drupal\Core\Config\ConfigFactory $configFactory
+   *   An instance of Config Factory.
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerFactory
+   *   LoggerChannelFactory.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
    */
-  public function __construct(ConfigFactory $config_factory) {
-    $this->config = $config_factory->get('okta_api.settings');
+  public function __construct(ConfigFactory $configFactory,
+                              LoggerChannelFactory $loggerFactory,
+                              ModuleHandlerInterface $module_handler) {
+    $this->config = $configFactory->get('okta_api.settings');
     $domain = $this->config->get('okta_domain');
+    $this->loggerFactory = $loggerFactory;
+    $this->moduleHandler = $module_handler;
 
     $oktaClientConfig = [
       // Don't auto-bootstrap the Okta resource properties.
@@ -51,7 +64,7 @@ class OktaClient {
    */
   public function debug($data, $type = 'response') {
     if ($this->config->get('debug_' . $type)) {
-      if (\Drupal::moduleHandler()->moduleExists('devel')) {
+      if ($this->moduleHandler->moduleExists('devel')) {
         ksm($data);
       }
     }

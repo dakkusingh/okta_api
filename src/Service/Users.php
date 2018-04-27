@@ -20,6 +20,13 @@ class Users {
   public $oktaClient;
 
   /**
+   * Okta Apps.
+   *
+   * @var \Drupal\okta_api\Service\Apps
+   */
+  public $oktaApps;
+
+  /**
    * Okta User Resource.
    *
    * @var \Okta\Resource\User
@@ -31,9 +38,13 @@ class Users {
    *
    * @param \Drupal\okta_api\Service\OktaClient $oktaClient
    *   Okta Client.
+   * @param \Drupal\okta_api\Service\Apps $oktaApps
+   *   Okta Apps Service.
    */
-  public function __construct(OktaClient $oktaClient) {
+  public function __construct(OktaClient $oktaClient,
+                              Apps $oktaApps) {
     $this->oktaClient = $oktaClient;
+    $this->oktaApps = $oktaApps;
     $this->user = new User($oktaClient->Client);
   }
 
@@ -140,7 +151,6 @@ class Users {
                                            array $provider = [],
                                            $activate = TRUE) {
     $createdUser = $this->userCreate($profile, $credentials, $provider, $activate);
-    $appService = \Drupal::service('okta_api.apps');
 
     $credentials = [
       'id' => $createdUser->id,
@@ -148,7 +158,7 @@ class Users {
       'credentials' => ['userName' => $createdUser->profile->email],
     ];
 
-    $result = $appService->assignUsersToApp($appId, $credentials);
+    $result = $this->oktaApps->assignUsersToApp($appId, $credentials);
     $this->oktaClient->debug($result, 'response');
     return $result;
   }
@@ -470,7 +480,12 @@ class Users {
    */
   private function logError($message, OktaException $e) {
     $this->oktaClient->debug($e, 'exception');
-    \Drupal::logger('okta_api')->error("@message - @exception", ['@message' => $message, '@exception' => $e->getErrorSummary()]);
+    $this->oktaClient->loggerFactory->get('okta_api')->error(
+      "@message - @exception", [
+        '@message' => $message,
+        '@exception' => $e->getErrorSummary(),
+      ]
+    );
   }
 
   // @codingStandardsIgnoreStart
