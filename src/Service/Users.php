@@ -542,7 +542,6 @@ class Users {
     );
   }
 
-
   /**
    * Checks that the user's password is valid.
    *
