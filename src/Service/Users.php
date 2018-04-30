@@ -72,9 +72,9 @@ class Users {
    * @param array $provider
    *   The authentication provider, if using.
    * @param bool $activate
-   *   TRUE if the user should be activated after creation.*
+   *   TRUE if the user should be activated after creation.*.
    * @param bool $returnExisting
-   * Return the user if exists?
+   *   Return the user if exists?
    *
    * @return bool|object
    *   Returns the user if creation was successful or FALSE if not.
@@ -120,11 +120,11 @@ class Users {
       $postUserCreateEvent = new PostUserCreateEvent($user);
       $this->eventDispatcher->dispatch(PostUserCreateEvent::OKTA_API_POSTUSERCREATE, $postUserCreateEvent);
 
-      // Log create user
+      // Log create user.
       $this->oktaClient->loggerFactory->get('okta_api')->notice(
         "@message",
         [
-          '@message' => 'created user: ' . $user['profile']['email']
+          '@message' => 'created user: ' . $user['profile']['email'],
         ]
       );
 
