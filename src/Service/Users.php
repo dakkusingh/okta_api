@@ -2,8 +2,11 @@
 
 namespace Drupal\okta_api\Service;
 
+use Drupal\okta_api\Event\PostUserCreateEvent;
+use Drupal\okta_api\Event\PreUserCreateEvent;
 use Okta\Exception as OktaException;
 use Okta\Resource\User;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class Users.
@@ -34,18 +37,29 @@ class Users {
   public $user;
 
   /**
+   * The event dispatcher.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
+
+  /**
    * Users constructor.
    *
    * @param \Drupal\okta_api\Service\OktaClient $oktaClient
    *   Okta Client.
    * @param \Drupal\okta_api\Service\Apps $oktaApps
    *   Okta Apps Service.
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $eventDispatcher
+   *   The event dispatcher.
    */
   public function __construct(OktaClient $oktaClient,
-                              Apps $oktaApps) {
+                              Apps $oktaApps,
+                              EventDispatcherInterface $eventDispatcher) {
     $this->oktaClient = $oktaClient;
     $this->oktaApps = $oktaApps;
     $this->user = new User($oktaClient->Client);
+    $this->eventDispatcher = $eventDispatcher;
   }
 
   /**
@@ -58,23 +72,63 @@ class Users {
    * @param array $provider
    *   The authentication provider, if using.
    * @param bool $activate
-   *   TRUE if the user should be activated after creation.
+   *   TRUE if the user should be activated after creation.*
+   * @param bool $returnExisting
+   * Return the user if exists?
    *
    * @return bool|object
    *   Returns the user if creation was successful or FALSE if not.
    */
-  public function userCreate(array $profile, $credentials = [], array $provider = NULL, $activate = TRUE) {
+  public function userCreate(array $profile,
+                             $credentials = [],
+                             array $provider = NULL,
+                             $activate = TRUE,
+                             $returnExisting = TRUE) {
 
-    $existingUser = $this->getUserIfExists($profile['email']);
-
-    if ($existingUser) {
-      return $existingUser;
+    if ($returnExisting == TRUE) {
+      $existingUser = $this->getUserIfExists($profile['email']);
+      if ($existingUser) {
+        return $existingUser;
+      }
     }
 
     try {
-      $user = $this->user->create($profile, $credentials, $provider, $activate);
-      $this->oktaClient->debug($user, 'response');
-      return $user;
+      $user = [
+        'profile' => $profile,
+        'credentials' => $credentials,
+        'provider' => $provider,
+        'activate' => $activate,
+        'already_registered' => FALSE,
+        'skip_register' => FALSE,
+      ];
+
+      // Allow other modules to subscribe to Pre Submit Event.
+      $preUserCreateEvent = new PreUserCreateEvent($user);
+      $preUser = $this->eventDispatcher->dispatch(PreUserCreateEvent::OKTA_API_PREUSERCREATE, $preUserCreateEvent);
+      $userTemp = $preUser->getUser();
+
+      $oktaUser = $this->user->create(
+        $userTemp['profile'],
+        $userTemp['credentials'],
+        $userTemp['provider'],
+        $userTemp['activate']
+      );
+
+      $this->oktaClient->debug($oktaUser, 'response');
+
+      // Allow other modules to subscribe to Post Submit Event.
+      $postUserCreateEvent = new PostUserCreateEvent($user);
+      $this->eventDispatcher->dispatch(PostUserCreateEvent::OKTA_API_POSTUSERCREATE, $postUserCreateEvent);
+
+      // Log create user
+      $this->oktaClient->loggerFactory->get('okta_api')->notice(
+        "@message",
+        [
+          '@message' => 'created user: ' . $user['profile']['email']
+        ]
+      );
+
+      return $oktaUser;
     }
     catch (OktaException $e) {
       $this->logError("Unable to create user", $e);
