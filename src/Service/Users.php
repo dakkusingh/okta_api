@@ -394,6 +394,26 @@ class Users {
   }
 
   /**
+   * Permanently delete a user.
+   *
+   * @param string $uid
+   *   An Okta user ID.
+   *
+   * @return object|bool
+   *   Decoded API response object or FALSE.
+   */
+  public function userDelete($uid) {
+    try {
+      $response = $this->user->delete($uid);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Failed to delete user $uid", $e);
+      return FALSE;
+    }
+  }
+
+  /**
    * Logs an error to the Drupal error log.
    *
    * @param string $message
