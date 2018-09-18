@@ -4,6 +4,6 @@
   "type": "drupal-module",
   "minimum-stability": "dev",
   "require": {
-    "dakkusingh/oktasdk": "1.2.11"
+    "dakkusingh/oktasdk": "1.2.12"
   }
 }
