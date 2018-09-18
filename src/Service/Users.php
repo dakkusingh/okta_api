@@ -279,6 +279,26 @@ class Users {
   }
 
   /**
+   * Unlock Okta User.
+   *
+   * @param string $user_id
+   *   The User ID to unlock.
+   *
+   * @return bool|\Okta\Resource\empty
+   *   Returns FALSE if unsuccessful or a response object if successful.
+   */
+  public function userUnlock($user_id) {
+    try {
+      $response = $this->user->unlock($user_id);
+      return $response;
+    }
+    catch (OktaException $e) {
+      $this->logError("Unable to unlock user $user_id", $e);
+      return FALSE;
+    }
+  }
+
+  /**
    * This operation will transition the user to the status of PASSWORD_EXPIRED
    * and the user will be required to change their password at their next
    * login. If tempPassword is passed, the user's password is reset to a
